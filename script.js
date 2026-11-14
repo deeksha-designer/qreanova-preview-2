@@ -50,11 +50,11 @@ const heroVideo = document.querySelector('.hero video');
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) heroVideo.pause();
 
 const previews = {
-  chimney: { title: 'Chimneys', description: 'A defining detail for a considered kitchen.', image: 'assets/product-chimney.png', alt: 'Concept image of a matte black chimney', target: '#chimneys' },
-  hob: { title: 'Hobs & cooktops', description: 'The centre of every creation.', image: 'assets/product-hob.png', alt: 'Concept image of a black glass hob', target: '#hobs' },
-  microwave: { title: 'Built-in microwaves', description: 'Designed to sit beautifully within the kitchen.', image: 'assets/built-in-ovens.png', alt: 'Concept image of a built-in microwave', target: '#ovens' },
-  oven: { title: 'Built-in ovens', description: 'A refined approach to an everyday essential.', image: 'assets/product-oven.png', alt: 'Concept image of a built-in oven', target: '#ovens' },
-  induction: { title: 'Infrared induction', description: 'Flexible cooking for the way you live.', image: 'assets/product-induction.png', alt: 'Concept image of an infrared induction cooktop', target: '#collection' }
+  chimney: { title: 'Chimneys', description: 'A defining detail for a considered kitchen.', price: 'MRP ₹42,990', image: 'assets/product-chimney.png', alt: 'Concept image of a matte black chimney', target: '#chimneys' },
+  hob: { title: 'Hobs & cooktops', description: 'The centre of every creation.', price: 'MRP ₹28,490', image: 'assets/product-hob.png', alt: 'Concept image of a black glass hob', target: '#hobs' },
+  microwave: { title: 'Built-in microwaves', description: 'Designed to sit beautifully within the kitchen.', price: 'MRP ₹36,990', image: 'assets/built-in-ovens.png', alt: 'Concept image of a built-in microwave', target: '#ovens' },
+  oven: { title: 'Built-in ovens', description: 'A refined approach to an everyday essential.', price: 'MRP ₹54,990', image: 'assets/product-oven.png', alt: 'Concept image of a built-in oven', target: '#ovens' },
+  induction: { title: 'Infrared induction', description: 'Flexible cooking for the way you live.', price: 'MRP ₹12,990', image: 'assets/product-induction.png', alt: 'Concept image of an infrared induction cooktop', target: '#collection' }
 };
 const previewImage = document.querySelector('#preview-image');
 const previewTitle = document.querySelector('#preview-title');
@@ -69,7 +69,7 @@ function showPreview(button) {
   previewImage.alt = item.alt;
   previewTitle.textContent = item.title;
   previewDescription.textContent = item.description;
-  if (previewPrice) previewPrice.textContent = 'MRP available on enquiry';
+  if (previewPrice) previewPrice.textContent = item.price;
   previewLink.href = item.target;
   hotspots.forEach(hotspot => {
     const active = hotspot === button;
