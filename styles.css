@@ -624,3 +624,73 @@ main h2 em{color:var(--copper)}
   .story-stack .story{animation:none!important}
   .collection-visual img{transition:none}
 }
+
+/* November 14: Qreanova brand, consistent editorial hierarchy and interactions. */
+body{background:#fff}
+.hero-media{width:100%;height:calc(100svh - 180px);min-height:560px;overflow:hidden;background:#111}
+.section-index{display:none!important}
+.hero h1 em,.opening h2 em,.collection-intro h2 em,.living-story h2 em,.story h2 em,.journal h2 em,.support h2 em,.contact h2 em{color:#97564a!important}
+.opening-inner,.visualizer-heading,.journal-heading{display:block}
+.opening-inner>p,.visualizer-heading p,.journal-heading>p,.hero-container .opening-inner p{max-width:720px;margin-top:22px;padding:0;color:#4f5551;font-size:16px;line-height:1.75}
+.hero-container .opening-inner{margin-bottom:54px}
+.hero-container .opening-inner p{margin-top:20px}
+
+.arrow-link,.light-link,.contact-button,.mega-all{min-height:44px;padding:11px 18px;border:1px solid currentColor;border-radius:0!important;display:inline-flex;align-items:center;justify-content:space-between;gap:34px;width:max-content;font-size:12px;font-weight:700;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.arrow-link:hover,.light-link:hover,.contact-button:hover,.mega-all:hover{background:#97564a!important;border-color:#97564a!important;color:#fff!important}
+.arrow-link span,.light-link span,.contact-button span,.mega-menu a span,.footer-lead>a span,.footer-contact>a span{font-size:0!important}
+.arrow-link span::after,.light-link span::after,.contact-button span::after,.mega-menu a span::after,.footer-lead>a span::after,.footer-contact>a span::after{content:"→";font-size:16px;font-weight:400}
+
+.mega-menu{border-top:3px solid #97564a;background:#fff;box-shadow:0 24px 60px #181b191f}
+.mega-column{padding:8px 24px 18px;border-left:1px solid #181b1917}
+.mega-column:first-child{border-left:0}
+.mega-column>a{padding:9px 0;border-bottom:1px solid transparent;transition:border-color .18s ease,color .18s ease}
+.mega-column>a:hover{color:#97564a;border-bottom-color:#97564a}
+.mega-feature{overflow:hidden;background:#ece9e4}
+.mega-feature img{transition:transform .5s cubic-bezier(.22,1,.36,1),filter .3s ease;filter:saturate(.78)}
+.mega-feature:hover img{transform:scale(1.035);filter:saturate(.9)}
+
+.visualizer{background:#fff}
+.visualizer-heading{margin-bottom:34px}
+.visualizer-heading>div{max-width:760px}
+.visualizer-grid{display:grid;grid-template-columns:minmax(0,70%) minmax(280px,30%);gap:0;background:#f4f1ed}
+.visualizer-stage>img{height:610px;object-fit:cover}
+.visualizer-preview{position:relative;inset:auto;width:auto;min-height:610px;padding:42px 34px;display:flex;flex-direction:column;background:#f4f1ed;color:var(--ink)}
+.visualizer-preview>img{height:235px;margin:0 0 30px;background:transparent;object-fit:contain}
+.visualizer-preview>div{display:flex;flex-direction:column;flex:1}
+.visualizer-preview h3{font-size:31px;line-height:1.15;margin:0 0 12px}
+.visualizer-preview p{min-height:0}
+.preview-price{margin-top:22px!important;padding-top:18px;border-top:1px solid #181b1926;color:#97564a!important;font-size:12px!important;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.visualizer-preview a{margin-top:auto;border:1px solid #181b19;padding:12px 16px}
+.hotspot.active{background:#97564a;border-color:#97564a}
+
+.support-directory{background:#fff}
+.support-directory-container{gap:0;border-top:1px solid #d8d4ce}
+.support-item{border-radius:0!important;padding:36px 28px;min-height:245px;border-right:1px solid #d8d4ce;border-bottom:1px solid #d8d4ce;transition:background .2s ease,color .2s ease}
+.support-item:nth-child(3n){border-right:0}
+a.support-item{background:#f5f1ed}
+a.support-item:hover{background:#97564a;color:#fff}
+.support-item span{color:#97564a}
+a.support-item:hover span,a.support-item:hover p{color:#fff}
+.support-item b{font-size:23px;font-weight:400}
+
+main section.reveal-ready{opacity:0;transform:translateY(36px);transition:opacity .7s ease,transform .8s cubic-bezier(.22,1,.36,1)}
+main section.reveal-ready.is-visible{opacity:1;transform:none}
+
+@media(width <= 900px){
+  .hero-media{height:calc(100svh - 150px)}
+  .visualizer-grid{grid-template-columns:minmax(0,65%) minmax(260px,35%)}
+  .visualizer-stage>img,.visualizer-preview{min-height:520px;height:520px}
+  .visualizer-preview{padding:30px 24px}
+  .visualizer-preview>img{height:175px}
+}
+@media(width <= 760px){
+  .hero-media{height:calc(100svh - 118px);min-height:500px}
+  .opening-inner>p,.visualizer-heading p,.journal-heading>p,.hero-container .opening-inner p{font-size:15px;margin-top:16px}
+  .visualizer-grid{display:block}
+  .visualizer-stage>img{height:430px;min-height:0}
+  .visualizer-preview{height:auto;min-height:370px;margin:0;padding:32px 24px;display:grid;grid-template-columns:120px 1fr;gap:22px}
+  .visualizer-preview>img{height:130px;margin:0}
+  .visualizer-preview>div{display:flex}
+  .support-item,.support-item:nth-child(3n){border-right:0}
+}
+@media(prefers-reduced-motion:reduce){main section.reveal-ready{opacity:1;transform:none;transition:none}}

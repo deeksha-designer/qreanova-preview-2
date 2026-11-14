@@ -59,6 +59,7 @@ const previews = {
 const previewImage = document.querySelector('#preview-image');
 const previewTitle = document.querySelector('#preview-title');
 const previewDescription = document.querySelector('#preview-description');
+const previewPrice = document.querySelector('#preview-price');
 const previewLink = document.querySelector('#preview-link');
 const hotspots = [...document.querySelectorAll('.hotspot')];
 function showPreview(button) {
@@ -68,6 +69,7 @@ function showPreview(button) {
   previewImage.alt = item.alt;
   previewTitle.textContent = item.title;
   previewDescription.textContent = item.description;
+  if (previewPrice) previewPrice.textContent = 'MRP available on enquiry';
   previewLink.href = item.target;
   hotspots.forEach(hotspot => {
     const active = hotspot === button;
@@ -206,14 +208,14 @@ function renderSearch(query = '') {
   searchResults.replaceChildren();
   if (!matches.length) {
     const message = document.createElement('p');
-    message.textContent = 'No matching section in this concept.';
+    message.textContent = 'No matching section found.';
     searchResults.append(message);
     return;
   }
   matches.forEach(item => {
     const link = document.createElement('a');
     link.href = item.href;
-    link.textContent = `${item.label} ↗`;
+    link.textContent = `${item.label} →`;
     link.addEventListener('click', closeSearch);
     searchResults.append(link);
   });
@@ -260,7 +262,7 @@ function renderCart() {
     const image = document.createElement('img'); image.src = catalog[id].image; image.alt = '';
     const details = document.createElement('div');
     const title = document.createElement('h3'); title.textContent = catalog[id].name;
-    const note = document.createElement('p'); note.textContent = 'Price to be confirmed';
+    const note = document.createElement('p'); note.textContent = 'Product details available on request';
     const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = 'Remove';
     remove.addEventListener('click', () => { cart.splice(index, 1); saveCart(); });
     details.append(title, note, remove); item.append(image, details); cartItems.append(item);
@@ -289,3 +291,16 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape') { closeCart(); closeSearch(); }
 });
 renderCart();
+
+const revealSections = [...document.querySelectorAll('main section')];
+if (!reduceMotion && 'IntersectionObserver' in window) {
+  revealSections.forEach(section => section.classList.add('reveal-ready'));
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      revealObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -8% 0px' });
+  revealSections.forEach(section => revealObserver.observe(section));
+}
