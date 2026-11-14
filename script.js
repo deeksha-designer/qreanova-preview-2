@@ -121,7 +121,7 @@ let journalTimer;
 let journalVisible = true;
 function advanceJournal() {
   if (!journalTrack || !journalVisible || reduceMotion) return;
-  const card = journalTrack.querySelector('.journal-card');
+  const card = journalTrack.querySelector('.journal-card:not([hidden])');
   const step = (card?.getBoundingClientRect().width || 420) + 18;
   const atEnd = journalTrack.scrollLeft + journalTrack.clientWidth >= journalTrack.scrollWidth - 12;
   journalTrack.scrollTo({ left: atEnd ? 0 : journalTrack.scrollLeft + step, behavior: 'smooth' });
@@ -142,6 +142,48 @@ if (journalTrack) {
     if (journalVisible) startJournal(); else stopJournal();
   }, { threshold: 0.15 }).observe(journalTrack);
 }
+
+const collectionImage = document.querySelector('#collection-image');
+document.querySelectorAll('.collection-tabs button').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('.collection-tabs button').forEach(tab => {
+      const active = tab === button;
+      tab.classList.toggle('active', active);
+      tab.setAttribute('aria-selected', String(active));
+    });
+    if (!collectionImage) return;
+    collectionImage.classList.add('changing');
+    window.setTimeout(() => {
+      collectionImage.src = button.dataset.image;
+      collectionImage.alt = button.dataset.alt;
+      collectionImage.classList.remove('changing');
+    }, reduceMotion ? 0 : 140);
+  });
+});
+
+function moveJournal(direction) {
+  if (!journalTrack) return;
+  const card = journalTrack.querySelector('.journal-card:not([hidden])');
+  const step = (card?.getBoundingClientRect().width || 420) + 24;
+  journalTrack.scrollBy({ left: direction * step, behavior: reduceMotion ? 'auto' : 'smooth' });
+}
+document.querySelector('.journal-prev')?.addEventListener('click', () => moveJournal(-1));
+document.querySelector('.journal-next')?.addEventListener('click', () => moveJournal(1));
+document.querySelectorAll('.journal-tabs button').forEach(button => {
+  button.addEventListener('click', () => {
+    const filter = button.dataset.filter;
+    document.querySelectorAll('.journal-tabs button').forEach(tab => {
+      const active = tab === button;
+      tab.classList.toggle('active', active);
+      tab.setAttribute('aria-selected', String(active));
+    });
+    journalTrack?.querySelectorAll('.journal-card').forEach(card => {
+      card.hidden = filter !== 'all' && card.dataset.category !== filter;
+    });
+    journalTrack?.scrollTo({ left: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    startJournal();
+  });
+});
 
 const searchButton = document.querySelector('.search-toggle');
 const searchPanel = document.querySelector('.search-panel');
