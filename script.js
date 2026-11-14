@@ -163,6 +163,30 @@ document.querySelectorAll('.collection-tabs button').forEach(button => {
   });
 });
 
+const launchTrack = document.querySelector('.launch-track');
+function moveLaunches(direction) {
+  if (!launchTrack) return;
+  const card = launchTrack.querySelector('.launch-card');
+  const step = (card?.getBoundingClientRect().width || 360) + 20;
+  launchTrack.scrollBy({ left: direction * step, behavior: reduceMotion ? 'auto' : 'smooth' });
+}
+document.querySelector('.launch-prev')?.addEventListener('click', () => moveLaunches(-1));
+document.querySelector('.launch-next')?.addEventListener('click', () => moveLaunches(1));
+document.querySelectorAll('[data-launch-filter]').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const filter = tab.dataset.launchFilter;
+    document.querySelectorAll('[data-launch-filter]').forEach(item => {
+      const active = item === tab;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-selected', String(active));
+    });
+    launchTrack?.querySelectorAll('.launch-card').forEach(card => {
+      card.hidden = filter !== 'all' && card.dataset.launchCategory !== filter;
+    });
+    launchTrack?.scrollTo({ left: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
+});
+
 function moveJournal(direction) {
   if (!journalTrack) return;
   const card = journalTrack.querySelector('.journal-card:not([hidden])');
