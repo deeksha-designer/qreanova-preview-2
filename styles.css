@@ -713,7 +713,7 @@ section#living{background:linear-gradient(182deg,#f4f1ed,#ffffff00)}
 .launch-feature{display:flex;min-width:0;flex-direction:column;background:#181b19;color:#fff;transition:background .18s ease-out}
 .launch-feature:hover,.launch-feature:focus-visible{background:#242825}
 .launch-media{height:390px;padding:38px;background:#eeeae4;overflow:hidden}
-.launch-feature:first-child .launch-media{height:470px}.launch-media img{height:100%;object-fit:contain;transition:transform .18s ease-out}.launch-feature:hover .launch-media img{transform:scale(1.025)}
+.launch-feature:first-child .launch-media{height:390px}.launch-media img{height:100%;object-fit:contain;transition:transform .18s ease-out}.launch-feature:hover .launch-media img{transform:scale(1.025)}
 .launch-copy{padding:28px 28px 34px}.launch-copy span{font-variant-numeric:tabular-nums;color:#c58a7e;font-size:12px}.launch-copy h3{margin:12px 0 10px;font-size:24px;font-weight:600}.launch-copy p{font-size:14px;line-height:1.6;color:#c9cbc8}
 
 .support-directory{background:transparent!important}
