@@ -804,7 +804,7 @@ section.support-directory.reveal-ready.is-visible{padding-bottom:0!important}
 
 /* Discover the kitchen background. */
 section.visualizer{background:linear-gradient(179deg,rgb(243,243,243),transparent)!important}
-.support-item>.support-arrow{position:absolute;right:28px;bottom:28px;font-size:18px;color:#97564a;transition:transform .2s ease-out,color .18s ease-out}
+.support-item>.support-arrow{position:absolute;left:28px;bottom:28px;font-size:18px;color:#97564a;transition:transform .2s ease-out,color .18s ease-out}
 .support-item:hover>.support-arrow,.support-item:focus-within>.support-arrow{color:#fff;transform:translateX(4px)}
 /* Journal: transform-based infinite slider (no scroll, no empty space at the end) */
 .journal-slider{overflow:hidden}
