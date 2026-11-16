@@ -810,3 +810,34 @@ section.visualizer{background:linear-gradient(179deg,rgb(243,243,243),transparen
 .journal-slider{overflow:hidden}
 .journal-grid{overflow:visible!important;scroll-snap-type:none!important;padding-right:0!important;will-change:transform}
 .journal-fade{background:linear-gradient(90deg,rgba(255,255,255,0),#fff)}
+
+/* Experience slider: keep big-screen proportions on every desktop width */
+@media (min-width:901px){
+  .experience-track article{flex:0 0 min(74.5%,1240px);height:auto;aspect-ratio:1240/600}
+  .experience-track img{height:100%}
+  .experience-track article>div{padding:clamp(32px,3.2vw,55px)}
+  .experience-track article span{font-size:clamp(24px,2.2vw,32px)}
+  .experience-track article p{font-size:clamp(13px,1.05vw,15px)}
+}
+
+/* Small desktops (901–1320px): wider content, lower collection image */
+@media (min-width:901px) and (max-width:1320px){
+  .section-container{padding:0 50px!important}
+  .hero-container>.section-container{padding:100px 50px!important}
+  .hero-copy{padding-left:50px;padding-right:50px}
+  .collection-project{min-height:0}
+  .collection-visual,.collection-visual img{min-height:clamp(460px,36vw,650px);height:clamp(460px,36vw,650px)}
+  /* each section's content fits in one screen */
+  .collection-visual,.collection-visual img{min-height:0;height:min(clamp(460px,36vw,650px),calc(100vh - 120px))}
+  .experience-track article{max-height:calc(100vh - 300px)}
+  .launch-card{min-height:clamp(430px,calc(100vh - 210px),530px)}
+  .launch-card img{height:clamp(170px,calc(100vh - 480px),250px)}
+  .visualizer-stage>img,.visualizer-preview{min-height:0;height:clamp(420px,calc(100vh - 170px),610px)}
+  .visualizer-preview>img{height:clamp(140px,calc(100vh - 520px),235px)}
+  .journal-card{min-height:0}
+  .journal-card img{height:clamp(260px,calc(100vh - 440px),300px)}
+  .support-image img,.contact-image img{height:clamp(460px,calc(100vh - 180px),620px)}
+  .contact-container{min-height:0}
+  .support-copy,.contact-copy{padding:48px 56px}
+  main h2,main h2 em{font-size:42px!important;line-height:1.08!important}
+}
