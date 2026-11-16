@@ -18,7 +18,7 @@ em{font-style:normal;font-weight:400}
 @media(width <= 520px){.hero h1{font-size:50px}.opening h2,.collection-intro h2{font-size:43px}.product-copy h2{font-size:70px}.living-story h2,.story h2,.support h2,.contact h2{font-size:50px}}
 /* Navigation, editorial journal, readable type, and wide motion hero */
 .desktop-nav{gap:25px;margin-left:2%}
-.desktop-nav a,.mega-trigger,.header-link{font-size:13px;font-weight:600;white-space:nowrap}
+.desktop-nav a,.mega-trigger,.header-link{font-size:14px;font-weight:600;white-space:nowrap}
 .mega-trigger{border:0;background:none;color:var(--ink);cursor:pointer;padding:10px 0;font-family:var(--sans)}
 .mega-trigger span{margin-left:6px;color:var(--bronze)}
 .mega-trigger[aria-expanded="true"]{color:#947755}
