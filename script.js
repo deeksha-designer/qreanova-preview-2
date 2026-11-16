@@ -1,39 +1,60 @@
 const menuButton = document.querySelector('.menu-toggle');
 const mobileNav = document.querySelector('.mobile-nav');
-const megaButton = document.querySelector('.mega-trigger');
-const megaMenu = document.querySelector('.mega-menu');
+const megaTriggers = [...document.querySelectorAll('.mega-trigger[aria-controls]')];
+const megaMenus = megaTriggers.map(trigger => document.getElementById(trigger.getAttribute('aria-controls'))).filter(Boolean);
 const desktopNav = document.querySelector('.desktop-nav');
 let openTimer;
 let closeTimer;
+let activeTrigger = null;
 
-function setMega(open) {
+function setMega(trigger) {
   clearTimeout(openTimer);
   clearTimeout(closeTimer);
-  megaMenu.hidden = !open;
-  megaButton.setAttribute('aria-expanded', String(open));
+  activeTrigger = trigger || null;
+  megaTriggers.forEach(item => {
+    const menu = document.getElementById(item.getAttribute('aria-controls'));
+    const open = item === activeTrigger;
+    if (menu) menu.hidden = !open;
+    item.setAttribute('aria-expanded', String(open));
+  });
 }
 function closeMegaSoon() {
+  clearTimeout(openTimer);
   clearTimeout(closeTimer);
-  closeTimer = setTimeout(() => setMega(false), 250);
+  closeTimer = setTimeout(() => setMega(null), 250);
 }
-megaButton.addEventListener('click', () => setMega(megaMenu.hidden));
-megaButton.addEventListener('mouseenter', () => {
-  clearTimeout(closeTimer);
-  openTimer = setTimeout(() => setMega(true), 180);
+megaTriggers.forEach(trigger => {
+  trigger.addEventListener('mouseenter', () => {
+    clearTimeout(closeTimer);
+    clearTimeout(openTimer);
+    // Switch instantly when another menu is already open, otherwise use a short intent delay.
+    if (activeTrigger) setMega(trigger);
+    else openTimer = setTimeout(() => setMega(trigger), 180);
+  });
+  trigger.addEventListener('focus', () => setMega(trigger));
+  if (trigger.tagName === 'BUTTON') {
+    trigger.addEventListener('click', () => setMega(activeTrigger === trigger ? null : trigger));
+  } else {
+    trigger.addEventListener('click', () => setMega(null));
+  }
+});
+// Plain nav links (Journal, Support) close any open mega menu.
+desktopNav.querySelectorAll('a:not(.mega-trigger)').forEach(link => {
+  link.addEventListener('mouseenter', () => { clearTimeout(openTimer); if (activeTrigger) setMega(null); });
+  link.addEventListener('focus', () => setMega(null));
 });
 desktopNav.addEventListener('mouseleave', closeMegaSoon);
-megaMenu.addEventListener('mouseenter', () => clearTimeout(closeTimer));
-megaMenu.addEventListener('mouseleave', closeMegaSoon);
-megaMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMega(false)));
+megaMenus.forEach(menu => {
+  menu.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+  menu.addEventListener('mouseleave', closeMegaSoon);
+  menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMega(null)));
+});
 document.addEventListener('click', event => {
-  if (!megaMenu.contains(event.target) && !megaButton.contains(event.target)) setMega(false);
+  if (!megaMenus.some(menu => menu.contains(event.target)) && !megaTriggers.some(trigger => trigger.contains(event.target))) setMega(null);
 });
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !megaMenu.hidden) { setMega(false); megaButton.focus(); }
+  if (event.key === 'Escape' && activeTrigger) { const trigger = activeTrigger; setMega(null); trigger.focus(); }
 });
-
-// Keep the navigation discoverable on hover while retaining keyboard/click access.
-megaButton.addEventListener('focus', () => setMega(true));
 
 menuButton.addEventListener('click', () => {
   const open = mobileNav.classList.toggle('open');
@@ -191,7 +212,13 @@ function moveJournal(direction) {
   if (!journalTrack) return;
   const card = journalTrack.querySelector('.journal-card:not([hidden])');
   const step = (card?.getBoundingClientRect().width || 420) + 24;
-  journalTrack.scrollBy({ left: direction * step, behavior: reduceMotion ? 'auto' : 'smooth' });
+  const behavior = reduceMotion ? 'auto' : 'smooth';
+  const maxScroll = journalTrack.scrollWidth - journalTrack.clientWidth;
+  // Infinite loop: wrap from the last story back to the first, and vice versa.
+  if (direction > 0 && journalTrack.scrollLeft >= maxScroll - 12) journalTrack.scrollTo({ left: 0, behavior });
+  else if (direction < 0 && journalTrack.scrollLeft <= 12) journalTrack.scrollTo({ left: maxScroll, behavior });
+  else journalTrack.scrollBy({ left: direction * step, behavior });
+  startJournal();
 }
 document.querySelector('.journal-prev')?.addEventListener('click', () => moveJournal(-1));
 document.querySelector('.journal-next')?.addEventListener('click', () => moveJournal(1));
@@ -252,7 +279,7 @@ searchButton.addEventListener('click', () => {
   const open = searchPanel.hidden;
   searchPanel.hidden = !open;
   searchButton.setAttribute('aria-expanded', String(open));
-  if (open) { setMega(false); renderSearch(searchInput.value); searchInput.focus(); }
+  if (open) { setMega(null); renderSearch(searchInput.value); searchInput.focus(); }
 });
 searchInput.addEventListener('input', () => renderSearch(searchInput.value));
 searchInput.addEventListener('keydown', event => {

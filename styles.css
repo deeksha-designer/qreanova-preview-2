@@ -781,3 +781,26 @@ section#living{background:linear-gradient(179deg,#f3f3f3,transparent)}
 .hero-media{height:75vh;min-height:0}
 section#support{padding-top:0!important}
 section.support-directory.reveal-ready.is-visible{padding-bottom:0!important}
+
+/* Common CTA button: one source of truth for padding, type, spacing and format. */
+:root{--btn-height:46px;--btn-pad-y:13px;--btn-pad-x:20px;--btn-gap:20px;--btn-font-size:14px;--btn-font-weight:700;--btn-line-height:1.2;--btn-icon-size:15px}
+.arrow-link,.light-link,.contact-button,.mega-all,.mega-column>a.mega-all,.visualizer-preview a,.footer-contact>a{min-height:var(--btn-height)!important;padding:var(--btn-pad-y) var(--btn-pad-x)!important;gap:var(--btn-gap)!important;font-family:var(--sans)!important;font-size:var(--btn-font-size)!important;font-weight:var(--btn-font-weight)!important;line-height:var(--btn-line-height)!important;letter-spacing:0!important;display:inline-flex!important;align-items:center;text-decoration:none}
+.arrow-link::after,.light-link::after,.contact-button::after,.mega-all::after,.visualizer-preview a::after,.footer-contact>a::after{font-size:var(--btn-icon-size)!important}
+.mega-column>a.mega-all{width:max-content!important;margin-top:12px}
+
+/* Product mega menus (Chimneys, Hobs & cooktops, Built-in). */
+.desktop-nav:hover .mega-trigger{color:var(--ink)}
+.desktop-nav .mega-trigger:hover,.desktop-nav .mega-trigger[aria-expanded="true"]{color:var(--bronze)}
+.mega-column>a.mega-product{display:grid;grid-template-columns:76px 1fr;align-items:center;gap:16px;padding:10px;border:1px solid #181b1914;background:#f6f4f1;transition:border-color .18s ease,background .18s ease}
+.mega-column>a.mega-product:hover{border-color:#97564a;background:#fff}
+.mega-product img{width:76px;height:64px;object-fit:contain}
+.mega-product span{display:flex;flex-direction:column;gap:3px;min-width:0}
+.mega-product strong{font-size:14px;font-weight:700;color:var(--ink)}
+.mega-product small{font-size:12px;color:#70756f}
+.mega-product em{font-style:normal;font-size:14px;font-weight:700;color:#97564a}
+
+/* Journal tabs: cards hidden by a filter must actually disappear. */
+.journal-card[hidden]{display:none!important}
+
+/* Discover the kitchen background. */
+section.visualizer{background:linear-gradient(179deg,rgb(243,243,243),transparent)!important}
