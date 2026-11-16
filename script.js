@@ -140,26 +140,71 @@ experienceTrack?.addEventListener('scroll', () => {
 
 const journalTrack = document.querySelector('.journal-grid');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Journal: true infinite loop. Cards are rotated (last <-> first) after each slide, so there is never an empty end.
 let journalTimer;
 let journalVisible = true;
-function advanceJournal() {
-  if (!journalTrack || !journalVisible || reduceMotion) return;
-  const card = journalTrack.querySelector('.journal-card:not([hidden])');
-  const step = (card?.getBoundingClientRect().width || 420) + 18;
-  const atEnd = journalTrack.scrollLeft + journalTrack.clientWidth >= journalTrack.scrollWidth - 12;
-  journalTrack.scrollTo({ left: atEnd ? 0 : journalTrack.scrollLeft + step, behavior: 'smooth' });
+let journalBusy = false;
+const JOURNAL_EASE = 'transform .7s cubic-bezier(.65,0,.35,1)';
+const journalCards = () => [...(journalTrack?.children || [])].filter(card => card.classList.contains('journal-card') && !card.hidden);
+function journalStep() {
+  const card = journalCards()[0];
+  if (!card) return 0;
+  return card.getBoundingClientRect().width + (parseFloat(getComputedStyle(journalTrack).columnGap) || 24);
+}
+function journalCanLoop() {
+  const step = journalStep();
+  return step > 0 && journalCards().length * step > journalTrack.parentElement.clientWidth + step * 0.5;
+}
+function resetJournal() {
+  if (!journalTrack) return;
+  journalTrack.style.transition = 'none';
+  journalTrack.style.transform = 'translate3d(0,0,0)';
+  journalBusy = false;
+}
+function moveJournal(direction) {
+  if (!journalTrack || journalBusy || !journalCanLoop()) return;
+  journalBusy = true;
+  const step = journalStep();
+  const finish = (fn) => {
+    let done = false;
+    const end = () => { if (done) return; done = true; fn(); journalBusy = false; };
+    journalTrack.addEventListener('transitionend', end, { once: true });
+    setTimeout(end, reduceMotion ? 20 : 900);
+  };
+  if (direction > 0) {
+    while (journalTrack.firstElementChild?.hidden) journalTrack.appendChild(journalTrack.firstElementChild);
+    journalTrack.style.transition = reduceMotion ? 'none' : JOURNAL_EASE;
+    journalTrack.style.transform = `translate3d(${-step}px,0,0)`;
+    finish(() => {
+      journalTrack.style.transition = 'none';
+      journalTrack.appendChild(journalTrack.firstElementChild);
+      journalTrack.style.transform = 'translate3d(0,0,0)';
+    });
+  } else {
+    while (journalTrack.lastElementChild?.hidden) journalTrack.prepend(journalTrack.lastElementChild);
+    journalTrack.style.transition = 'none';
+    journalTrack.prepend(journalTrack.lastElementChild);
+    journalTrack.style.transform = `translate3d(${-step}px,0,0)`;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      journalTrack.style.transition = reduceMotion ? 'none' : JOURNAL_EASE;
+      journalTrack.style.transform = 'translate3d(0,0,0)';
+    }));
+    finish(() => {});
+  }
 }
 function startJournal() {
   if (!journalTrack || reduceMotion) return;
   clearInterval(journalTimer);
-  journalTimer = setInterval(advanceJournal, 4200);
+  journalTimer = setInterval(() => { if (journalVisible && !document.hidden) moveJournal(1); }, 4200);
 }
 function stopJournal() { clearInterval(journalTimer); }
 if (journalTrack) {
-  journalTrack.addEventListener('mouseenter', stopJournal);
-  journalTrack.addEventListener('mouseleave', startJournal);
-  journalTrack.addEventListener('focusin', stopJournal);
-  journalTrack.addEventListener('focusout', startJournal);
+  const area = journalTrack.closest('.journal-slider');
+  area.addEventListener('mouseenter', stopJournal);
+  area.addEventListener('mouseleave', startJournal);
+  area.addEventListener('focusin', stopJournal);
+  area.addEventListener('focusout', startJournal);
+  window.addEventListener('resize', resetJournal);
   new IntersectionObserver(entries => {
     journalVisible = entries[0]?.isIntersecting ?? false;
     if (journalVisible) startJournal(); else stopJournal();
@@ -208,20 +253,8 @@ document.querySelectorAll('[data-launch-filter]').forEach(tab => {
   });
 });
 
-function moveJournal(direction) {
-  if (!journalTrack) return;
-  const card = journalTrack.querySelector('.journal-card:not([hidden])');
-  const step = (card?.getBoundingClientRect().width || 420) + 24;
-  const behavior = reduceMotion ? 'auto' : 'smooth';
-  const maxScroll = journalTrack.scrollWidth - journalTrack.clientWidth;
-  // Infinite loop: wrap from the last story back to the first, and vice versa.
-  if (direction > 0 && journalTrack.scrollLeft >= maxScroll - 12) journalTrack.scrollTo({ left: 0, behavior });
-  else if (direction < 0 && journalTrack.scrollLeft <= 12) journalTrack.scrollTo({ left: maxScroll, behavior });
-  else journalTrack.scrollBy({ left: direction * step, behavior });
-  startJournal();
-}
-document.querySelector('.journal-prev')?.addEventListener('click', () => moveJournal(-1));
-document.querySelector('.journal-next')?.addEventListener('click', () => moveJournal(1));
+document.querySelector('.journal-prev')?.addEventListener('click', () => { moveJournal(-1); startJournal(); });
+document.querySelector('.journal-next')?.addEventListener('click', () => { moveJournal(1); startJournal(); });
 document.querySelectorAll('.journal-tabs button').forEach(button => {
   button.addEventListener('click', () => {
     const filter = button.dataset.filter;
@@ -233,7 +266,7 @@ document.querySelectorAll('.journal-tabs button').forEach(button => {
     journalTrack?.querySelectorAll('.journal-card').forEach(card => {
       card.hidden = filter !== 'all' && card.dataset.category !== filter;
     });
-    journalTrack?.scrollTo({ left: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    resetJournal();
     startJournal();
   });
 });
